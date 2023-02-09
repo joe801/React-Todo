@@ -1,12 +1,11 @@
 import { useState } from "react"
 
 const AddTodo = () => {
+    //let r = document.querySelector(':root');
     // variable to get user input
     const [input, setInput] = useState("");
     //a list to store todo list
-    const [list, setList] = useState([]);
-    // variable to check the state o checkbox
-    const [check, setCheck] = useState(false);
+    let [list, setList] = useState([]);
     // function to add input todo to list
     const addlist = (e) => {
         if (input === "") {
@@ -18,7 +17,8 @@ const AddTodo = () => {
             // creating a json object and adding inputed todo as value
             const newTodo = {
                 id: Math.random(), //giving each object a specific random id
-                todos: todo
+                todos: todo,
+                done: false
             };
     
             //adding newtodo json object to list
@@ -34,39 +34,53 @@ const AddTodo = () => {
         //updating new list after filter
         setList(newtodolist);
     }
+
+    /*if (check) {
+        let rs = getComputedStyle(r);
+        console.log(rs.getPropertyValue('--checked'));
+        r.style.setProperty('--checked', 'line-through');
+    } else {
+        r.style.setProperty('--checked', 'none');
+    } */
+
+    const isChecked = (id) => {
+        setList(list.map((item) => (
+            item.id === id ? {...item, done: !item.done} : item
+        )))
+    } 
+
     return (
-        <section className="container d-flex justify-content-center">
-            <div className="m-5 bg-light shadow p-3 mb-5 bg-body rounded">
+        <section>
+            <div className="top"></div>
+            <h2 className="">Todo List</h2>
+            <div className="container">
                 <div className="">
-                    <h2 className="bg-info text-light fw-bold text-center">Todo List</h2>
-                    <div className="d-flex justify-content-between mt-4 inputContain btn-sm">
+                    <div className="inputContain">
                         <input 
                             type="text"
                             required
                             placeholder="add a new task"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            className=""
+                            className="w-75"
                         />
-                        <button onClick={addlist} className="text-light btn-info">Add Todo</button>
+                        <button onClick={addlist} className="">Add Todo</button>
                     </div>
                 </div>
-                <p className="">{input}</p>
                 <div className="todoDisp">
                     <ul>
                         {list.map((item) => (
-                            <li key={item.id} className="d-flex justify-content-between w-75">
-                                <div className="d-flex">
+                            <li key={item.id} className="">
+                                <div className="">
                                     <input 
                                     type="checkbox" 
-                                    checked={check}
-                                    onChange={(e) => setCheck(e.target.checked)}
+                                    checked={item.done}
+                                    onChange={() => isChecked(item.id)}
                                     className="checkbox"
                                     />
-                                    {!check && <p>{item.todos}</p>}
-                                    {check && <p className="checked">{item.todos}</p>}
+                                    <p className={item.done ? 'checked' : ''}>{item.todos}</p>
                                 </div>
-                                <p onClick={() => removeTodo(item.id)} className="bg-danger rounded-circle text-light cancel">x</p>
+                                <p onClick={() => removeTodo(item.id)} className="cancel">x</p>
                             </li>
                         ))}
                     </ul>
